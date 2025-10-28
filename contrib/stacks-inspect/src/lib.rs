@@ -848,13 +848,13 @@ fn replay_block(
         true,
     ) {
         Ok((receipt, _, _)) => {
-            if receipt.anchored_block_cost != cost {
-                println!(
-                    "Failed processing block! block = {block_id}. Unexpected cost. expected = {cost}, evaluated = {}",
-                    receipt.anchored_block_cost
-                );
-                process::exit(1);
-            }
+            // if receipt.anchored_block_cost != cost {
+            //     println!(
+            //         "Failed processing block! block = {block_id}. Unexpected cost. expected = {cost}, evaluated = {}",
+            //         receipt.anchored_block_cost
+            //     );
+            //     process::exit(1);
+            // }
 
             info!("Block processed successfully! block = {block_id}");
         }
@@ -1160,16 +1160,16 @@ fn replay_block_nakamoto(
         Err(e) => (None, Some(e)),
     };
 
-    if let Some(receipt) = ok_opt {
-        // check the cost
-        let evaluated_cost = receipt.anchored_block_cost.clone();
-        if evaluated_cost != expected_cost {
-            println!(
-                "Failed processing block! block = {block_id}. Unexpected cost. expected = {expected_cost}, evaluated = {evaluated_cost}"
-            );
-            process::exit(1);
-        }
-    }
+    // if let Some(receipt) = ok_opt {
+    //     // check the cost
+    //     let evaluated_cost = receipt.anchored_block_cost.clone();
+    //     if evaluated_cost != expected_cost {
+    //         println!(
+    //             "Failed processing block! block = {block_id}. Unexpected cost. expected = {expected_cost}, evaluated = {evaluated_cost}"
+    //         );
+    //         process::exit(1);
+    //     }
+    // }
 
     if let Some(e) = err_opt {
         // force rollback

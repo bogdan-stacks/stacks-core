@@ -418,18 +418,7 @@ where
     F: FnOnce(&mut OwnedEnvironment) -> R,
 {
     let mut db = marf.as_clarity_db(header_db, &NULL_BURN_STATE_DB);
-    let cost_track = LimitedCostTracker::new(
-        mainnet,
-        default_chain_id(mainnet),
-        if mainnet {
-            BLOCK_LIMIT_MAINNET_205
-        } else {
-            HELIUM_BLOCK_LIMIT_20
-        },
-        &mut db,
-        DEFAULT_CLI_EPOCH,
-    )
-    .unwrap();
+    let cost_track = LimitedCostTracker::new_free();
     let mut vm_env = OwnedEnvironment::new_cost_limited(
         mainnet,
         default_chain_id(mainnet),
@@ -1202,18 +1191,15 @@ pub fn invoke_command(invoked_by: &str, args: &[String]) -> (i32, Option<serde_j
                     }
 
                     let vm_filename = &argv[2];
-                    let header_db =
-                        friendly_expect(CLIHeadersDB::resume(vm_filename), "Failed to open CLI DB");
                     let marf_kv = friendly_expect(
                         MarfedKV::open(vm_filename, None, None),
                         "Failed to open VM database.",
                     );
 
                     let result = at_chaintip(&argv[2], marf_kv, |mut marf| {
-                        let result = run_analysis(
+                        let result = run_analysis_free(
                             &contract_id,
                             &mut ast,
-                            &header_db,
                             &mut marf,
                             false,
                             clarity_version,
@@ -1226,10 +1212,9 @@ pub fn invoke_command(invoked_by: &str, args: &[String]) -> (i32, Option<serde_j
                     let mut analysis_marf = MemoryBackingStore::new();
 
                     install_boot_code(&header_db, &mut analysis_marf);
-                    run_analysis(
+                    run_analysis_free(
                         &contract_id,
                         &mut ast,
-                        &header_db,
                         &mut analysis_marf,
                         false,
                         clarity_version,
@@ -1678,10 +1663,9 @@ pub fn invoke_command(invoked_by: &str, args: &[String]) -> (i32, Option<serde_j
             };
             let (_, _, analysis_result_and_cost) =
                 in_block(header_db, marf_kv, |header_db, mut marf| {
-                    let analysis_result = run_analysis(
+                    let analysis_result = run_analysis_free(
                         &contract_identifier,
                         &mut ast,
-                        &header_db,
                         &mut marf,
                         true,
                         clarity_version,

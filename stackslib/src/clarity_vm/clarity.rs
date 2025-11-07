@@ -421,16 +421,8 @@ impl ClarityInstance {
 
         let epoch = Self::get_epoch_of(current, header_db, burn_state_db);
         let cost_track = {
-            let mut clarity_db = datastore.as_clarity_db(&NULL_HEADER_DB, &NULL_BURN_STATE_DB);
             Some(
-                LimitedCostTracker::new(
-                    self.mainnet,
-                    self.chain_id,
-                    epoch.block_limit.clone(),
-                    &mut clarity_db,
-                    epoch.epoch_id,
-                )
-                .expect("FAIL: problem instantiating cost tracking"),
+                LimitedCostTracker::new_free(),
             )
         };
 
@@ -681,16 +673,8 @@ impl ClarityInstance {
         let epoch = Self::get_epoch_of(current, header_db, burn_state_db);
 
         let cost_track = {
-            let mut clarity_db = datastore.as_clarity_db(&NULL_HEADER_DB, &NULL_BURN_STATE_DB);
             Some(
-                LimitedCostTracker::new(
-                    self.mainnet,
-                    self.chain_id,
-                    epoch.block_limit.clone(),
-                    &mut clarity_db,
-                    epoch.epoch_id,
-                )
-                .expect("FAIL: problem instantiating cost tracking"),
+                LimitedCostTracker::new_free(),
             )
         };
 
@@ -721,16 +705,8 @@ impl ClarityInstance {
 
         let epoch = Self::get_epoch_of(base_tip, header_db, burn_state_db);
         let cost_track = {
-            let mut clarity_db = datastore.as_clarity_db(&NULL_HEADER_DB, &NULL_BURN_STATE_DB);
             Some(
-                LimitedCostTracker::new(
-                    self.mainnet,
-                    self.chain_id,
-                    epoch.block_limit.clone(),
-                    &mut clarity_db,
-                    epoch.epoch_id,
-                )
-                .expect("FAIL: problem instantiating cost tracking"),
+                LimitedCostTracker::new_free(),
             )
         };
 

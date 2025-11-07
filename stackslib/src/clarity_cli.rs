@@ -228,18 +228,7 @@ fn run_analysis<C: ClarityStorage>(
     clarity_version: ClarityVersion,
 ) -> Result<ContractAnalysis, Box<(CheckError, LimitedCostTracker)>> {
     let mainnet = header_db.is_mainnet();
-    let cost_track = LimitedCostTracker::new(
-        mainnet,
-        default_chain_id(mainnet),
-        if mainnet {
-            BLOCK_LIMIT_MAINNET_205.clone()
-        } else {
-            HELIUM_BLOCK_LIMIT_20.clone()
-        },
-        &mut marf_kv.get_clarity_db(header_db, &NULL_BURN_STATE_DB),
-        DEFAULT_CLI_EPOCH,
-    )
-    .unwrap();
+    let cost_track = LimitedCostTracker::new_free();
     analysis::run_analysis(
         contract_identifier,
         expressions,
@@ -416,18 +405,7 @@ where
     F: FnOnce(&mut OwnedEnvironment) -> R,
 {
     let mut db = marf.as_clarity_db(header_db, &NULL_BURN_STATE_DB);
-    let cost_track = LimitedCostTracker::new(
-        mainnet,
-        default_chain_id(mainnet),
-        if mainnet {
-            BLOCK_LIMIT_MAINNET_205.clone()
-        } else {
-            HELIUM_BLOCK_LIMIT_20.clone()
-        },
-        &mut db,
-        DEFAULT_CLI_EPOCH,
-    )
-    .unwrap();
+    let cost_track = LimitedCostTracker::new_free();
     let mut vm_env = OwnedEnvironment::new_cost_limited(
         mainnet,
         default_chain_id(mainnet),
